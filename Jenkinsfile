@@ -18,9 +18,16 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh 'echo "Deploy stage - Ansible will run here"'
+                sh '''
+                    docker run --rm \
+                      -v jenkins_jenkins_home:/jenkins_home \
+                      -v /var/run/docker.sock:/var/run/docker.sock \
+                      -w /jenkins_home/workspace/ansible-nginx \
+                      ansible-runner:latest \
+                      ansible-playbook playbook.yml
+                '''
             }
         }
 
     }
-}
+}  
